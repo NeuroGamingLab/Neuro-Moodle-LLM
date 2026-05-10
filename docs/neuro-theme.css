@@ -1,0 +1,247 @@
+/**
+ * Neuro theme tokens — aligned with Neuro Gaming Lab GitHub Pages
+ * https://neurogaminglab.github.io/Neuro-Gaming-Lab/
+ * Source: https://github.com/NeuroGamingLab/Neuro-Gaming-Lab/blob/main/docs/index.html
+ */
+:root {
+  --bg: #0a0a0f;
+  --surface: #12121a;
+  --border: #2a2a3a;
+  --text: #e8e6e3;
+  --muted: #888888;
+  --accent: #7c3aed;
+  --accent-glow: rgba(124, 58, 237, 0.4);
+  --green: #22c55e;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 18px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* CRT-style scanlines — same subtle overlay as Neuro Gaming Lab */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
+  position: relative;
+  z-index: 1;
+}
+
+.org-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.org-logo {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.08em;
+  text-decoration: none;
+}
+
+.org-logo:hover {
+  color: var(--accent);
+}
+
+.org-logo span {
+  color: var(--accent);
+}
+
+header {
+  margin-bottom: 3rem;
+}
+
+.logo {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--accent);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.tagline {
+  font-size: 1.1rem;
+  color: var(--muted);
+  margin-top: 0.75rem;
+  font-weight: 400;
+}
+
+.tagline strong {
+  color: var(--text);
+  font-weight: 500;
+}
+
+section {
+  margin-bottom: 2.5rem;
+}
+
+section p {
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+section p:last-child {
+  margin-bottom: 0;
+}
+
+.highlight {
+  background: linear-gradient(135deg, var(--surface) 0%, rgba(124, 58, 237, 0.08) 100%);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem 1.75rem;
+  margin: 2rem 0;
+}
+
+.highlight p {
+  color: var(--text);
+  margin-bottom: 0.75rem;
+}
+
+.highlight p:last-child {
+  margin-bottom: 0;
+}
+
+.pill {
+  display: inline-block;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.75rem;
+  padding: 0.35rem 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.pill.accent {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 1rem;
+  letter-spacing: -0.01em;
+}
+
+.link-list {
+  list-style: none;
+}
+
+.link-list li {
+  margin-bottom: 0.75rem;
+}
+
+.link-list a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 0;
+}
+
+.link-list a:hover {
+  text-decoration: underline;
+}
+
+.link-list a::after {
+  content: "→";
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+code,
+pre {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.85rem;
+}
+
+code {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 0.15rem 0.45rem;
+  border-radius: 6px;
+  color: var(--green);
+}
+
+pre {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  color: var(--text);
+  margin: 1rem 0;
+}
+
+footer {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.9rem;
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+footer a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}

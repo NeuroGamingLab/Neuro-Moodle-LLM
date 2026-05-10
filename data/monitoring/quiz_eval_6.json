@@ -1,0 +1,45 @@
+{
+  "kind": "quiz_attempt_eval",
+  "ts": 1778391303,
+  "attempt_id": 6,
+  "course_id": 7,
+  "quiz_id": 11,
+  "user_id": 2,
+  "summary": {
+    "n": 1,
+    "learner_score": 0.0,
+    "agent_must_cite_hit": 1.0,
+    "agent_topic_recall": 1.0
+  },
+  "cases": [
+    {
+      "question_id": 9,
+      "slot": 1,
+      "stem": "What does P(A|B) represent in the definition of conditional probability?",
+      "learner_answer": "",
+      "right_answer": "P(A|B) represents the probability of event A occurring given that event B has occurred",
+      "learner_correct": false,
+      "must_cite": "Understanding Conditional Probability",
+      "must_cite_hit": 1.0,
+      "expected_topics": [
+        "Conditional Probability",
+        "Bayes' Theorem"
+      ],
+      "topic_recall": 1.0,
+      "agent_top_sources": [
+        {
+          "title": "Understanding Conditional Probability",
+          "score": 0.3495000441145602
+        },
+        {
+          "title": "Understanding Conditional Probability",
+          "score": 0.24340972518826698
+        },
+        {
+          "title": "Understanding Conditional Probability",
+          "score": 0.21373986811046794
+        }
+      ]
+    }
+  ]
+}

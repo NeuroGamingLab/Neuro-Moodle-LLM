@@ -1,0 +1,15 @@
+# ML / RAG API — runs outside Moodle; calls Moodle web services + Qdrant + Ollama.
+# Build context is repo root (same as Dockerfile.moodle). Keep image small: no Moodle tarball COPY here.
+FROM python:3.11.10-slim-bookworm
+
+WORKDIR /app
+
+COPY pyproject.toml README.md ./
+COPY src ./src
+
+RUN pip install --no-cache-dir -U pip \
+    && pip install --no-cache-dir -e .
+
+EXPOSE 8888
+
+CMD ["uvicorn", "neuro_moodle_llm.api.main:app", "--host", "0.0.0.0", "--port", "8888"]

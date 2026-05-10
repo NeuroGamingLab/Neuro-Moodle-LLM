@@ -1,0 +1,294 @@
+# =============================================================================
+# .gitignore for Neuro-Moodle-LLM — security-first.
+#
+# This file is organised by *risk category*, not by language. Each section
+# explains the threat being mitigated. If you add a new exception, prefer
+# allowlisting (`!path`) over deleting a rule, and document why.
+# =============================================================================
+
+
+# -----------------------------------------------------------------------------
+# 1. SECRETS & CREDENTIALS  (highest risk: irreversible compromise on commit)
+# -----------------------------------------------------------------------------
+# `.env` holds POSTGRES_PASSWORD, MOODLE_ADMIN_PASSWORD, and the live
+# MOODLE_TOKEN minted by docker/bootstrap-webservice.php. The `.env.example`
+# template is intentionally allowlisted below so contributors know what
+# variables exist without ever seeing real values.
+.env
+.env.*
+!.env.example
+
+# Generic credential / key material — pre-empt accidental drops anywhere
+# in the tree (docker/, scripts/, src/, root, etc.).
+*.pem
+*.key
+*.crt
+*.cer
+*.der
+*.p7b
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.kdbx
+*.gpg
+*.asc
+secrets.yaml
+secrets.yml
+secrets.json
+secrets.toml
+credentials.json
+service-account*.json
+client_secret*.json
+.netrc
+.htpasswd
+
+# SSH / cloud / container-registry creds that sometimes get copied in by mistake
+id_rsa
+id_rsa.*
+id_ecdsa
+id_ecdsa.*
+id_ed25519
+id_ed25519.*
+known_hosts
+.aws/
+.azure/
+.gcp/
+.docker/config.json
+auth.json
+
+# GitHub Actions / CI runtime secrets that some teams accidentally drop locally
+.secrets/
+
+
+# -----------------------------------------------------------------------------
+# 2. MOODLE RUNTIME ARTIFACTS  (PII, session data, DB creds in config.php)
+# -----------------------------------------------------------------------------
+# `moodledata/` and `config.php` live INSIDE the moodle container / its
+# named volume — they should never be on the host, but if anyone ever
+# extracts them (e.g. for debugging) keep git from picking them up.
+# config.php contains the live DB password and dataroot path.
+moodledata/
+**/moodledata/
+config.php
+**/config.php
+# Allow the upstream template that ships in the Moodle source tree, only
+# if the source ever gets unpacked into the workspace.
+!**/config-dist.php
+
+# Moodle CLI install marker, lock files, course backups (often contain PII).
+install.lock
+*.mbz
+*.mbz.tmp
+mdl_*.bak
+
+# Moodle plugin build / vendor dirs (Composer / npm artifacts of plugins).
+moodle_plugins/**/vendor/
+moodle_plugins/**/node_modules/
+
+
+# -----------------------------------------------------------------------------
+# 3. DATA STORES & DUMPS  (PII + credentials inside SQL dumps; huge files)
+# -----------------------------------------------------------------------------
+# Never commit DB dumps — they almost always contain hashed passwords,
+# email addresses, and other regulated data.
+*.sql
+*.sql.gz
+*.sql.zst
+*.dump
+*.dmp
+*.bak
+*.backup
+pg_dump_*
+pgdata/
+postgres-data/
+postgres_data/
+
+# Qdrant local persistence (snapshots can include indexed payloads = data).
+qdrant_storage/
+qdrant_data/
+*.snapshot
+
+# Ollama model blobs (multi-GB, not secret but should never be in git).
+ollama_data/
+ollama_models/
+.ollama/
+
+
+# -----------------------------------------------------------------------------
+# 4. SUPPLY-CHAIN ARTIFACTS  (large/untrusted binary blobs)
+# -----------------------------------------------------------------------------
+# moodle-latest-502.tar (~492 MB) is the upstream Moodle source tarball.
+# Keep it OUT of git history for two reasons:
+#   (a) it is a binary blob that bloats the repo permanently, and
+#   (b) re-downloading from moodle.org and verifying the checksum at build
+#       time is a stronger supply-chain story than trusting whatever copy
+#       lives in the repo.
+# Document the expected SHA256 in README.md alongside the download URL.
+moodle-latest-*.tar
+moodle-latest-*.tar.gz
+moodle-*.zip
+
+# Other large/binary blobs that should not enter git history.
+*.iso
+*.img
+*.qcow2
+*.vmdk
+*.vdi
+*.tar
+*.tar.gz
+*.tgz
+*.tar.zst
+*.zip
+*.7z
+*.rar
+
+
+# -----------------------------------------------------------------------------
+# 5. PYTHON / VIRTUALENV  (huge tree, often contains cached package metadata
+#    and sometimes credentials in pip caches)
+# -----------------------------------------------------------------------------
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+*.egg
+*.egg-info/
+dist/
+build/
+wheels/
+pip-wheel-metadata/
+pip-log.txt
+pip-delete-this-directory.txt
+
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.pytest_cache/
+.mypy_cache/
+.pyre/
+.pytype/
+.ruff_cache/
+
+# Jupyter / IPython history can contain pasted secrets.
+.ipynb_checkpoints/
+profile_default/
+ipython_config.py
+
+
+# -----------------------------------------------------------------------------
+# 6. DOCKER / BUILD ARTIFACTS
+# -----------------------------------------------------------------------------
+# Override files often contain dev-only secrets / bind mounts a maintainer
+# does not want shared. Allow the canonical compose file via the rule above.
+docker-compose.override.yml
+docker-compose.override.yaml
+docker-compose.*.local.yml
+.docker-build/
+.buildx-cache/
+
+
+# -----------------------------------------------------------------------------
+# 7. LOGS, CRASH DUMPS, TRACES  (often capture tokens, PII, stack frames)
+# -----------------------------------------------------------------------------
+*.log
+*.log.*
+logs/
+log/
+core
+core.*
+*.dmp
+*.stackdump
+*.heap
+*.prof
+*.pprof
+.trace/
+trace.out
+
+
+# -----------------------------------------------------------------------------
+# 8. EDITOR / OS METADATA  (history files can leak partial source w/ secrets)
+# -----------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.Spotlight-V100
+.Trashes
+
+.idea/
+.vscode/
+.history/
+.fleet/
+*.iml
+
+*.swp
+*.swo
+*.swn
+*~
+*.orig
+*.rej
+*.bak
+*.tmp
+*.temp
+
+
+# -----------------------------------------------------------------------------
+# 9. AGENT / TOOLING SCRATCH SPACE
+# -----------------------------------------------------------------------------
+# Local scripts often capture intermediate dumps / token-laden curl logs.
+scripts/_local/
+scripts/*.local.*
+.tmp/
+tmp/
+out/
+output/
+
+# Cursor IDE per-user state (the workspace can live in this folder during
+# heavy editing; project-wide rules belong elsewhere, not here).
+.cursor/
+
+
+# -----------------------------------------------------------------------------
+# 10. RUNTIME DATA  (eval golden files, monitoring snapshots, learner feedback)
+# -----------------------------------------------------------------------------
+# `data/` is the operational scratch directory written by the FastAPI service:
+#   - data/eval/                golden files + per-run scorecards
+#   - data/eval/runs/           full retrieval traces (can be large; chat text)
+#   - data/monitoring/          drift + judge snapshots, quiz_eval_*.json
+#   - data/feedback/thumbs.jsonl  learner thumbs-up/down log
+#   - data/uploads/             arbitrary user uploads (NEVER commit)
+#
+# Ignoring the whole directory keeps the repo PII-clean by default; a small
+# *curated* demo subset is allowlisted below so a fresh clone has realistic
+# example shapes for tests and Streamlit pages without dragging in every
+# historical run from this developer's laptop.
+/data/*
+/data/**/*
+
+# Allowlist: tiny, fully synthetic demo subset (no PII, no real learner data).
+# Add new exceptions here ONLY after manual review of the file's contents.
+!/data/eval/
+!/data/eval/champion.json
+!/data/eval/golden.example.jsonl
+!/data/eval/golden_synthetic_92242.jsonl
+!/data/eval/quiz_eval_meta_8.json
+!/data/eval/runs/
+!/data/eval/runs/1778392436-dashboard.json
+!/data/monitoring/
+!/data/monitoring/1778385586.json
+!/data/monitoring/quiz_eval_6.json
+!/data/feedback/
+!/data/feedback/thumbs.jsonl
+
+# Hard-deny user uploads even if the directory is otherwise re-allowed.
+/data/uploads/
+/data/uploads/**

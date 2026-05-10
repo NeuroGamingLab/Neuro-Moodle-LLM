@@ -1,0 +1,38 @@
+{
+  "course_id": 8,
+  "synth_course_id": 92322,
+  "synth_run_id": "1778394168547-5bc9b54a",
+  "questions": [
+    {
+      "question_id": 10,
+      "must_cite": "Defining Water Molecules",
+      "expected_topics": [
+        "Defining Water Molecules",
+        "Molecular Structure of H2O"
+      ]
+    },
+    {
+      "question_id": 11,
+      "must_cite": "Defining Water Molecules",
+      "expected_topics": [
+        "Defining Water Molecules",
+        "Electronegativity and Bonding"
+      ]
+    },
+    {
+      "question_id": 12,
+      "must_cite": "Hydrogen Bonding in Water",
+      "expected_topics": [
+        "Hydrogen Bonding in Water"
+      ]
+    },
+    {
+      "question_id": 13,
+      "must_cite": "Hydrogen Bonding in Water",
+      "expected_topics": [
+        "Importance of Hydrogen Bonding in Water",
+        "Physical Properties of Water"
+      ]
+    }
+  ]
+}

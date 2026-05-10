@@ -1,0 +1,22 @@
+# Streamlit operator dashboard for the Neuro ML enhancement surfaces.
+# Reads/writes nothing locally beyond the bind-mounted ./data (read-only); all
+# state changes go through the neuro-moodle-llm FastAPI service.
+FROM python:3.11.10-slim-bookworm
+
+WORKDIR /app
+
+RUN pip install --no-cache-dir -U pip \
+    && pip install --no-cache-dir \
+        "streamlit>=1.39,<2" \
+        "requests>=2.32,<3"
+
+COPY streamlit_app /app/streamlit_app
+
+ENV PYTHONPATH=/app/streamlit_app \
+    NEURO_API_BASE=http://neuro-moodle-llm:8888 \
+    NEURO_DATA_DIR=/data \
+    NEURO_DEFAULT_COURSE_ID=2
+
+EXPOSE 8501
+
+CMD ["streamlit", "run", "/app/streamlit_app/Home.py", "--server.address=0.0.0.0", "--server.port=8501"]

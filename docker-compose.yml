@@ -1,0 +1,119 @@
+# Local stack: custom Moodle image (Dockerfile.moodle) + Postgres + Qdrant + Ollama.
+# Copy .env.example to .env, set secrets, then: docker compose up -d --build
+#
+# After Ollama is healthy, pull models once:
+#   docker compose exec ollama ollama pull llama3.2
+#   docker compose exec ollama ollama pull nomic-embed-text
+#
+# Moodle: http://localhost:8080  |  Qdrant UI: http://localhost:6333/dashboard
+# Ollama API: http://localhost:11434  |  Postgres (host): localhost:5433 → container :5432 (avoids clash with local Postgres on 5432)
+# Neuro ML API: http://localhost:8888/docs  (FastAPI — outside Moodle core)
+
+services:
+  postgres:
+    image: postgres:16.6-bookworm
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      # Host 5433: many dev machines already run Postgres (or another tool) on 5432.
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  moodle:
+    build:
+      context: .
+      dockerfile: Dockerfile.moodle
+    image: neuro-moodle-llm/moodle:local
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      MOODLE_DATAROOT: /var/moodledata
+    ports:
+      - "8080:80"
+    volumes:
+      - moodledata:/var/moodledata
+      - ./moodle_plugins/neurollm:/var/www/html/public/local/neurollm
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  neuro-moodle-llm:
+    build:
+      context: .
+      dockerfile: Dockerfile.neuro
+    image: neuro-moodle-llm/api:local
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      # Inside Compose, talk to Moodle on the service-name network alias, but force
+      # the HTTP Host header to match Moodle's wwwroot so it doesn't 303-redirect.
+      MOODLE_BASE_URL: http://moodle
+      MOODLE_HOST_HEADER: localhost:8080
+      QDRANT_URL: http://qdrant:6333
+      OLLAMA_HOST: http://ollama:11434
+    ports:
+      - "8888:8888"
+    volumes:
+      # Persist registry / eval / monitoring / feedback / dpo / audit artefacts on the host
+      # so the Streamlit dashboard can read them and they survive container rebuilds.
+      - ./data:/app/data
+    depends_on:
+      - moodle
+      - qdrant
+      - ollama
+
+  streamlit:
+    build:
+      context: .
+      dockerfile: Dockerfile.streamlit
+    image: neuro-moodle-llm/streamlit:local
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NEURO_API_BASE: http://neuro-moodle-llm:8888
+      NEURO_DATA_DIR: /data
+      NEURO_DEFAULT_COURSE_ID: "2"
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/data:ro
+    depends_on:
+      - neuro-moodle-llm
+
+  qdrant:
+    image: qdrant/qdrant:v1.12.5
+    restart: unless-stopped
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+  ollama:
+    image: ollama/ollama:0.11.10
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+volumes:
+  postgres_data:
+  moodledata:
+  qdrant_data:
+  ollama_data:

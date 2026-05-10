@@ -1,0 +1,94 @@
+{
+  "run_id": "1778392436-dashboard",
+  "label": "dashboard",
+  "knobs": {
+    "top_k": 5,
+    "candidate_k": 20,
+    "use_hybrid": true,
+    "use_rerank": true,
+    "use_qa_cache": false,
+    "embed_model": "nomic-embed-text",
+    "chat_model": "llama3.2"
+  },
+  "n": 2,
+  "summary": {
+    "topic_recall@k": 0.5,
+    "must_cite_hit@k": 0.0,
+    "mrr@k": 0.5,
+    "confidence": 0.0903,
+    "latency_ms_p50": 69.0,
+    "latency_ms_avg": 69.0
+  },
+  "results": [
+    {
+      "question": "What is in week 1?",
+      "course_id": 2,
+      "answer": "I don't have enough course material on this. The closest references are listed below \u2014 please consult them or refine your question.",
+      "sources": [
+        {
+          "score": 0.09028318034057681,
+          "components": {
+            "src0_rank": 1.0,
+            "src0_raw": 0.6508036,
+            "src1_rank": 1.0,
+            "src1_raw": 0.41097438921682977,
+            "rerank": 0.6931471805599453,
+            "reranker": "lexical-overlap-v1"
+          },
+          "title": "Welcome",
+          "heading_path": "Welcome",
+          "modtype": "label",
+          "module_name": "Welcome",
+          "section_name": "New section",
+          "url": null,
+          "course_id": 2,
+          "ingest_run_id": "1778377258287-d1d346e7",
+          "text_snippet": "Welcome\n\nWeek 1 \u2014 Introduction\nThis Neuro course covers RAG over Moodle, hybrid retrieval with dense and BM25, and reranking. Week 1 introduces the architecture and Phase 1 enhancements."
+        }
+      ],
+      "metrics": {
+        "topic_recall@k": 1.0,
+        "must_cite_hit@k": 0.0,
+        "mrr@k": 1.0,
+        "confidence": 0.09028318034057681
+      },
+      "latency_ms": 105.05887500039535,
+      "cache": "miss"
+    },
+    {
+      "question": "When is the first assignment due?",
+      "course_id": 2,
+      "answer": "I don't have enough course material on this. The closest references are listed below \u2014 please consult them or refine your question.",
+      "sources": [
+        {
+          "score": 0.09028318034057681,
+          "components": {
+            "src0_rank": 1.0,
+            "src0_raw": 0.54037285,
+            "src1_rank": 1.0,
+            "src1_raw": 0.28768207245178085,
+            "rerank": 0.6931471805599453,
+            "reranker": "lexical-overlap-v1"
+          },
+          "title": "Welcome",
+          "heading_path": "Welcome",
+          "modtype": "label",
+          "module_name": "Welcome",
+          "section_name": "New section",
+          "url": null,
+          "course_id": 2,
+          "ingest_run_id": "1778377258287-d1d346e7",
+          "text_snippet": "Welcome\n\nWeek 1 \u2014 Introduction\nThis Neuro course covers RAG over Moodle, hybrid retrieval with dense and BM25, and reranking. Week 1 introduces the architecture and Phase 1 enhancements."
+        }
+      ],
+      "metrics": {
+        "topic_recall@k": 0.0,
+        "must_cite_hit@k": 0.0,
+        "mrr@k": 0.0,
+        "confidence": 0.09028318034057681
+      },
+      "latency_ms": 32.91379199799849,
+      "cache": "miss"
+    }
+  ]
+}

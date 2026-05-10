@@ -1,0 +1,19 @@
+Objectives (critical infrastructure: custom-built images, pinned bases, no opaque vendor Moodle stacks):
+
+1. Moodle — custom Docker image built from the official Moodle tarball (moodle-latest-502.tar) on a pinned base OS and PHP/Apache (or nginx-php) stack we control; no prebuilt third-party Moodle images. Mount moodledata/ as a named volume on the same Moodle service (survives rebuilds, auditable layout).
+
+2. PostgreSQL — Docker service pinned to a major version compatible with Moodle 5.x (e.g. 16), credentials from .env; Moodle DB only on this service.
+
+3. Qdrant — Docker service for vector storage; collection and URL aligned with .env (e.g. course_content).
+
+4. Ollama — Docker service; pre-pull pinned models for reproducibility: llama3.2 (e.g. llama3.2:3b for chat) and nomic-embed-text for embeddings.
+
+5. Orchestration — single docker-compose (or equivalent) on a private network; expose host ports only where needed for local dev (Moodle, Postgres if required, Qdrant, Ollama).
+
+6. Moodle ↔ Qdrant ↔ Ollama integration for courses and assignments:
+   a. Ingest course content (resources, pages, assignment briefs) → embed via Ollama → upsert to Qdrant.
+   b. RAG Q&A scoped per course/assignment where appropriate.
+   c. LLM-assisted feedback on submissions grounded in the course corpus.
+   d. Deliver via neurollm plugin and/or src/neuro_moodle_llm service; Moodle web services token in .env for API access.
+
+Rationale: custom Moodle build fortifies the stack (known provenance, patchable Dockerfile, CI-friendly image signing later) versus pulling an unvetted “all-in-one” image.

@@ -1,0 +1,2 @@
+{"course_id": 2, "question": "What is in week 1?", "expected_topics": ["week 1", "introduction"], "must_cite": "Section: Topic 1"}
+{"course_id": 2, "question": "When is the first assignment due?", "expected_topics": ["assignment", "due"], "must_cite": "Assignment:"}

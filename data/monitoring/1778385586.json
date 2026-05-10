@@ -1,0 +1,18 @@
+{
+  "ts": 1778385586,
+  "drift": {
+    "n_index": 27,
+    "n_new": 0,
+    "cosine_distance": 0.0,
+    "threshold": 0.05,
+    "drifted": false
+  },
+  "judge": {
+    "judge_avg": 2.0,
+    "champion_judge_avg": null,
+    "drop": 0.0,
+    "alert": false,
+    "n": 2
+  },
+  "alert": false
+}

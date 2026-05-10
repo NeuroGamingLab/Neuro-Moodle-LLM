@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Neuro-Moodle-LLM · Neuro Gaming Lab</title>
+    <meta
+      name="description"
+      content="Self-hosted Moodle 5.2, PostgreSQL, Qdrant, and Ollama with a Python RAG integration layer."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="neuro-theme.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="org-header">
+        <a class="org-logo" href="https://neurogaminglab.github.io/Neuro-Gaming-Lab/"
+          >Neuro<span>Gaming</span>Lab</a
+        >
+        <span class="pill accent">Moodle · RAG</span>
+      </div>
+
+      <header>
+        <p class="logo">Neuro-Moodle-LLM</p>
+        <h1>Where course content meets retrieval intelligence</h1>
+        <p class="tagline">
+          Self-hosted <strong>Moodle 5.2</strong>, <strong>PostgreSQL 16</strong>,
+          <strong>Qdrant</strong>, and <strong>Ollama</strong> — with a Python layer that
+          <strong>embeds</strong> course material and answers in context.
+        </p>
+      </header>
+
+      <section aria-label="Stack">
+        <span class="pill accent">Moodle 5.2</span>
+        <span class="pill">PostgreSQL</span>
+        <span class="pill">Qdrant</span>
+        <span class="pill">Ollama</span>
+        <span class="pill">Python</span>
+        <span class="pill">Docker</span>
+      </section>
+
+      <div class="highlight">
+        <p>
+          A <strong>custom-built Moodle image</strong> (official tarball on pinned PHP
+          8.3 + Apache), not a third-party distro. The CLI
+          <code>neuro-moodle-llm</code> calls Moodle web services, pushes vectors to
+          Qdrant, and grounds answers in <code>llama3.2</code> with
+          <code>nomic-embed-text</code> embeddings.
+        </p>
+        <p>
+          Full setup, architecture diagrams, and commands live in the repository
+          <strong>README</strong> on GitHub.
+        </p>
+      </div>
+
+      <section aria-label="Quick start">
+        <h2>Quick start</h2>
+        <pre><code>cp .env.example .env
+docker compose up -d --build
+docker compose exec ollama ollama pull llama3.2
+docker compose exec ollama ollama pull nomic-embed-text</code></pre>
+      </section>
+
+      <section aria-label="Links">
+        <h2>Repository &amp; lab</h2>
+        <ul class="link-list">
+          <li>
+            <a href="https://github.com/NeuroGamingLab/Neuro-Moodle-LLM">Neuro-Moodle-LLM on GitHub</a>
+          </li>
+          <li>
+            <a href="https://neurogaminglab.github.io/Neuro-Gaming-Lab/">Neuro Gaming Lab hub</a>
+          </li>
+        </ul>
+      </section>
+
+      <footer>
+        <a href="https://github.com/NeuroGamingLab">View on GitHub</a>
+        <span>·</span>
+        <span>Theme aligned with</span>
+        <a href="https://github.com/NeuroGamingLab/Neuro-Gaming-Lab">Neuro-Gaming-Lab</a>
+        <span>docs</span>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,66 @@
+# Pinned PHP patch level; bump intentionally when rebuilding for security updates.
+# Moodle 5.2.x requires PHP 8.3+ (see Moodle 5.2 release notes).
+FROM php:8.3.17-apache-bookworm
+
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        bash \
+        ghostscript \
+        libfreetype6-dev \
+        libicu-dev \
+        libjpeg62-turbo-dev \
+        libpng-dev \
+        libpq-dev \
+        libwebp-dev \
+        libxml2-dev \
+        libzip-dev \
+        locales \
+        postgresql-client \
+        unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
+    && locale-gen \
+    && update-locale LANG=en_US.UTF-8
+
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
+
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install -j"$(nproc)" \
+        bcmath \
+        exif \
+        gd \
+        intl \
+        opcache \
+        pdo_pgsql \
+        pgsql \
+        soap \
+        zip
+
+COPY moodle-latest-502.tar /tmp/moodle.tar
+RUN mkdir -p /var/www/html \
+    && tar -xf /tmp/moodle.tar -C /var/www/html --strip-components=1 \
+    && rm -f /tmp/moodle.tar \
+    && chown -R root:www-data /var/www/html \
+    && find /var/www/html -type d -exec chmod 0755 {} \; \
+    && find /var/www/html -type f -exec chmod 0644 {} \;
+
+COPY docker/php-moodle.ini /usr/local/etc/php/conf.d/zz-moodle.ini
+
+COPY docker/apache-moodle.conf /etc/apache2/sites-available/moodle.conf
+RUN a2dissite 000-default.conf 2>/dev/null || true \
+    && a2ensite moodle.conf \
+    && a2enmod rewrite headers
+
+COPY docker/docker-entrypoint-moodle.sh /usr/local/bin/docker-entrypoint-moodle.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint-moodle.sh
+
+ENV MOODLE_DATAROOT=/var/moodledata
+
+WORKDIR /var/www/html
+
+EXPOSE 80
+
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint-moodle.sh"]
