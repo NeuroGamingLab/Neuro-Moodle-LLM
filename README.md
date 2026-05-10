@@ -45,6 +45,10 @@ The system has four planes: **(1)** the Moodle LMS and its database inside Docke
 and **(4)** the **Python CLI** on your host (or any machine that can reach the published ports).
 Configuration is read from `.env` for both Compose and the Python package.
 
+<p align="center">
+  <img src="docs/image4.png" alt="Architecture overview — planes and data flow" />
+</p>
+
 ### Component diagram
 
 The stack runs as **six containers** on a user-defined bridge network (`neuro-net`) — start
