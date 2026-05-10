@@ -9,6 +9,13 @@ The Moodle image is **custom-built** from the official tarball
 (`moodle-latest-502.tar`) on a pinned `php:8.3.17-apache-bookworm` base.
 No third-party Moodle distros are used.
 
+## Screenshots
+
+<p align="center">
+  <img src="docs/neuro-ml-assistance-1.png" width="49%" alt="Neuro ML Assistance — Streamlit operator dashboard" />
+  <img src="docs/neuro-ml-assistance-2.png" width="49%" alt="Neuro ML Assistance — synthetic course publish + closed-loop quiz eval" />
+</p>
+
 ### Neuro theme (branded hub)
 
 The [Neuro Gaming Lab](https://neurogaminglab.github.io/Neuro-Gaming-Lab/) hub uses a dark “Neuro” palette and paired fonts. This repo mirrors that look in **`docs/`** so you get the same feel outside GitHub’s plain Markdown renderer:
