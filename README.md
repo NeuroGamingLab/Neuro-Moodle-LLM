@@ -35,6 +35,11 @@ The [Neuro Gaming Lab](https://neurogaminglab.github.io/Neuro-Gaming-Lab/) hub u
 
 ## Architecture
 
+<p align="center">
+  <img src="docs/image0.png" width="49%" alt="Architecture diagram — stack overview" />
+  <img src="docs/image1.png" width="49%" alt="Architecture diagram — service relationships" />
+</p>
+
 The system has four planes: **(1)** the Moodle LMS and its database inside Docker,
 **(2)** the vector store and local LLM runtime, **(3)** the **Neuro ML API** (FastAPI in Docker),
 and **(4)** the **Python CLI** on your host (or any machine that can reach the published ports).

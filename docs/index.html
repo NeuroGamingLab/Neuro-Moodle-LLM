@@ -6,7 +6,7 @@
     <title>Neuro-Moodle-LLM · Neuro Gaming Lab</title>
     <meta
       name="description"
-      content="Self-hosted Moodle 5.2, PostgreSQL, Qdrant, and Ollama with a Python RAG integration layer."
+      content="Self-hosted Moodle 5.2 + Qdrant + Ollama RAG stack with a FastAPI ML service that ingests courses, answers questions, generates synthetic courses, and runs closed-loop quiz-attempt evaluation."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -22,68 +22,138 @@
         <a class="org-logo" href="https://neurogaminglab.github.io/Neuro-Gaming-Lab/"
           >Neuro<span>Gaming</span>Lab</a
         >
-        <span class="pill accent">Moodle · RAG</span>
+        <span class="pill accent">Moodle · RAG · Agents</span>
       </div>
 
       <header>
         <p class="logo">Neuro-Moodle-LLM</p>
-        <h1>Where course content meets retrieval intelligence</h1>
+        <h1>An ML service that wraps Moodle — without forking it.</h1>
         <p class="tagline">
-          Self-hosted <strong>Moodle 5.2</strong>, <strong>PostgreSQL 16</strong>,
-          <strong>Qdrant</strong>, and <strong>Ollama</strong> — with a Python layer that
-          <strong>embeds</strong> course material and answers in context.
+          Self-hosted <strong>Moodle 5.2</strong> + <strong>Qdrant</strong> +
+          <strong>Ollama</strong> with a <strong>FastAPI</strong> ML service and a
+          <strong>Streamlit</strong> operator dashboard. Course-scoped RAG, synthetic
+          course generation, and closed-loop quiz-attempt evaluation.
         </p>
       </header>
 
       <section aria-label="Stack">
         <span class="pill accent">Moodle 5.2</span>
-        <span class="pill">PostgreSQL</span>
+        <span class="pill">PostgreSQL 16</span>
         <span class="pill">Qdrant</span>
-        <span class="pill">Ollama</span>
-        <span class="pill">Python</span>
-        <span class="pill">Docker</span>
+        <span class="pill">Ollama · Llama 3.2</span>
+        <span class="pill">FastAPI</span>
+        <span class="pill">Streamlit</span>
+        <span class="pill">Docker Compose</span>
       </section>
 
       <div class="highlight">
         <p>
-          A <strong>custom-built Moodle image</strong> (official tarball on pinned PHP
-          8.3 + Apache), not a third-party distro. The CLI
-          <code>neuro-moodle-llm</code> calls Moodle web services, pushes vectors to
-          Qdrant, and grounds answers in <code>llama3.2</code> with
-          <code>nomic-embed-text</code> embeddings.
-        </p>
-        <p>
-          Full setup, architecture diagrams, and commands live in the repository
-          <strong>README</strong> on GitHub.
+          A <strong>custom-built Moodle image</strong> (official tarball on pinned
+          PHP 8.3 + Apache) — <strong>core is unchanged</strong>. The ML stack lives
+          in a separate <code>neuro-moodle-llm</code> container on
+          <code>:8888</code>; a thin <code>local_neurollm</code> plugin is the only
+          seam — it adds an <strong>in-course chat link</strong>, exposes
+          <strong>custom Web Services</strong> for synthetic-course authoring, and
+          ships an <strong>event observer</strong> that POSTs quiz submissions to
+          the API for closed-loop evaluation.
         </p>
       </div>
+
+      <section aria-label="Essential capabilities">
+        <h2>What it does</h2>
+        <ul class="link-list">
+          <li>
+            <strong>RAG over Moodle courses</strong> — hybrid retrieval (dense +
+            BM25 + RRF), cross-encoder rerank, semantic chunking, embedding cache,
+            and grounded answers with citations.
+          </li>
+          <li>
+            <strong>Synthetic courses (Phase A → C)</strong> — Ollama authors course
+            shells &amp; module pages, generates multichoice quizzes with
+            distractors, publishes them into Moodle via the plugin's Web Services,
+            then re-ingests for evaluation.
+          </li>
+          <li>
+            <strong>Closed-loop quiz-attempt eval</strong> — Moodle observer fires
+            on submission; the agent retrieves grounded sources and scores
+            <code>must_cite_hit@k</code> and <code>topic_recall@k</code> per
+            attempt.
+          </li>
+          <li>
+            <strong>Agentic feedback + HITL</strong> — Retriever → Critic →
+            Validator pipeline drafts feedback grounded in the rubric; the
+            instructor approves before <code>mod_assign_save_grade</code>.
+          </li>
+          <li>
+            <strong>Drift &amp; LLM-as-judge monitoring</strong> — centroid drift on
+            new ingest, probe-question judging, and a champion / challenger ledger.
+          </li>
+          <li>
+            <strong>Streamlit operator dashboard</strong> on <code>:8501</code> —
+            RAG playground, ingest, eval &amp; monitor, HITL, audit, DPO export,
+            event simulator, and the synthetic-course publisher.
+          </li>
+        </ul>
+      </section>
 
       <section aria-label="Quick start">
         <h2>Quick start</h2>
         <pre><code>cp .env.example .env
 docker compose up -d --build
 docker compose exec ollama ollama pull llama3.2
-docker compose exec ollama ollama pull nomic-embed-text</code></pre>
+docker compose exec ollama ollama pull nomic-embed-text
+
+# Mint the Moodle web-service token used by the ML API
+docker cp docker/bootstrap-webservice.php neuro-moodle-llm-moodle-1:/tmp/bootstrap-webservice.php
+docker exec neuro-moodle-llm-moodle-1 php /tmp/bootstrap-webservice.php
+# → paste the printed MOODLE_TOKEN=… into .env, then restart the API
+
+# Moodle UI : http://localhost:8080   (admin / set in .env)
+# ML API    : http://localhost:8888/docs   (Swagger)
+# Streamlit : http://localhost:8501</code></pre>
       </section>
 
       <section aria-label="Links">
-        <h2>Repository &amp; lab</h2>
+        <h2>Documentation &amp; lab</h2>
         <ul class="link-list">
           <li>
-            <a href="https://github.com/NeuroGamingLab/Neuro-Moodle-LLM">Neuro-Moodle-LLM on GitHub</a>
+            <a href="https://github.com/NeuroGamingLab/Neuro-Moodle-LLM"
+              >Neuro-Moodle-LLM on GitHub</a
+            >
           </li>
           <li>
-            <a href="https://neurogaminglab.github.io/Neuro-Gaming-Lab/">Neuro Gaming Lab hub</a>
+            <a
+              href="https://github.com/NeuroGamingLab/Neuro-Moodle-LLM/blob/main/README.md"
+              >README — architecture diagram &amp; full setup</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://github.com/NeuroGamingLab/Neuro-Moodle-LLM/blob/main/docs/SYNTHETIC_COURSES_WALKTHROUGH.md"
+              >Synthetic course walkthrough (Phase A · B · C)</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://github.com/NeuroGamingLab/Neuro-Moodle-LLM/blob/main/ml-enhancement-reviews/IMPLEMENTATION-MAP.md"
+              >ML enhancement → implementation map</a
+            >
+          </li>
+          <li>
+            <a href="https://neurogaminglab.github.io/Neuro-Gaming-Lab/"
+              >Neuro Gaming Lab hub</a
+            >
           </li>
         </ul>
       </section>
 
       <footer>
-        <a href="https://github.com/NeuroGamingLab">View on GitHub</a>
+        <a href="https://github.com/NeuroGamingLab/Neuro-Moodle-LLM">View on GitHub</a>
         <span>·</span>
-        <span>Theme aligned with</span>
-        <a href="https://github.com/NeuroGamingLab/Neuro-Gaming-Lab">Neuro-Gaming-Lab</a>
-        <span>docs</span>
+        <span>Architecture and design:</span>
+        <strong style="color: var(--text); font-weight: 500"
+          >Dang-Tue Hoang — AI Engineer</strong
+        >
       </footer>
     </div>
   </body>
