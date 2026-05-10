@@ -135,6 +135,10 @@ The **Neuro ML API** (`docker compose` service `neuro-moodle-llm`) exposes OpenA
 
 `src/neuro_moodle_llm/ollama.py` (`OllamaClient`) wraps Ollama's HTTP API: **`/api/version`**, **`/api/tags`**, **`/api/pull`**, **`/api/embed`** (batch when available, else per-text), **`/api/embeddings`**, **`/api/chat`** (non-streaming JSON), plus **`warm()`** for a cheap keep-alive hit. Every request uses an httpx timeout from **`OLLAMA_HTTP_TIMEOUT_S`** (default **3600** seconds in `config.py`) so long runs like **`POST /v1/synth/course`** do not fail with `ReadTimeout` on cold model load. If Ollama still exceeds that budget, `/v1/synth/course` returns **`504`** with guidance instead of an opaque `500`.
 
+<p align="center">
+  <img src="docs/image6.png" alt="Ollama integration — OllamaClient wrapping /api/embed, /api/chat, warm()" />
+</p>
+
 ### Streamlit operator dashboard
 
 The **`streamlit`** service (image `neuro-moodle-llm/streamlit:local`, built from `Dockerfile.streamlit`, source under `streamlit_app/`) is an instructor / ML-ops console layered on top of the FastAPI service — it makes no direct calls to Qdrant / Ollama / Moodle. Open **http://localhost:8501** after `docker compose up -d --build`. Pages include **Home**, **RAG Playground**, **Ingest**, **Eval & Monitor**, **HPO & Registry**, **HITL Feedback**, **Audit**, **Symbolic**, **DPO Export**, **Event Simulator**, and **Synthetic Course** (Ollama course generator with optional **publish to Moodle**, quiz-attempt eval, and purge). State is read from the bind-mounted `./data` directory (also mounted read-write into the API container so eval / registry / monitoring artefacts persist across rebuilds). **Rebuild the Streamlit image** after changing `streamlit_app/` (the Dockerfile `COPY`s sources into the image). Auth is **not** built in — gate `:8501` behind your reverse proxy or basic-auth before exposing.
