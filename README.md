@@ -16,22 +16,6 @@ No third-party Moodle distros are used.
   <img src="docs/neuro-ml-assistance-2.png" width="49%" alt="Neuro ML Assistance — synthetic course publish + closed-loop quiz eval" />
 </p>
 
-### Neuro theme (branded hub)
-
-The [Neuro Gaming Lab](https://neurogaminglab.github.io/Neuro-Gaming-Lab/) hub uses a dark “Neuro” palette and paired fonts. This repo mirrors that look in **`docs/`** so you get the same feel outside GitHub’s plain Markdown renderer:
-
-| Token | Value | Use |
-|-------|-------|-----|
-| Background | `#0a0a0f` | Page |
-| Surface | `#12121a` | Cards, code background |
-| Text | `#e8e6e3` | Body copy |
-| Muted | `#888` | Secondary text |
-| Accent | `#7c3aed` | Links, highlights |
-| Body font | **Space Grotesk** | Paragraphs, headings |
-| Mono font | **JetBrains Mono** | Logo strip, pills, `code` |
-
-- **Local:** open [`docs/index.html`](docs/index.html) in a browser (loads [`docs/neuro-theme.css`](docs/neuro-theme.css) + Google Fonts).
-- **GitHub Pages:** enable **Settings → Pages →** Build from **`/docs`** on `main`; the themed landing will be served at your usual `*.github.io/<repo>/` URL.
 
 ## Architecture
 
@@ -139,9 +123,9 @@ The **Neuro ML API** (`docker compose` service `neuro-moodle-llm`) exposes OpenA
   <img src="docs/image6.png" alt="Ollama integration — OllamaClient wrapping /api/embed, /api/chat, warm()" />
 </p>
 
-### Streamlit operator dashboard
+### Operator dashboard
 
-The **`streamlit`** service (image `neuro-moodle-llm/streamlit:local`, built from `Dockerfile.streamlit`, source under `streamlit_app/`) is an instructor / ML-ops console layered on top of the FastAPI service — it makes no direct calls to Qdrant / Ollama / Moodle. Open **http://localhost:8501** after `docker compose up -d --build`. Pages include **Home**, **RAG Playground**, **Ingest**, **Eval & Monitor**, **HPO & Registry**, **HITL Feedback**, **Audit**, **Symbolic**, **DPO Export**, **Event Simulator**, and **Synthetic Course** (Ollama course generator with optional **publish to Moodle**, quiz-attempt eval, and purge). State is read from the bind-mounted `./data` directory (also mounted read-write into the API container so eval / registry / monitoring artefacts persist across rebuilds). **Rebuild the Streamlit image** after changing `streamlit_app/` (the Dockerfile `COPY`s sources into the image). Auth is **not** built in — gate `:8501` behind your reverse proxy or basic-auth before exposing.
+The service (image `neuro-moodle-llm/streamlit:local`, built from `Dockerfile.streamlit`, source under `streamlit_app/`) is an instructor / ML-ops console layered on top of the FastAPI service — it makes no direct calls to Qdrant / Ollama / Moodle. Open **http://localhost:8501** after `docker compose up -d --build`. Pages include **Home**, **RAG Playground**, **Ingest**, **Eval & Monitor**, **HPO & Registry**, **HITL Feedback**, **Audit**, **Symbolic**, **DPO Export**, **Event Simulator**, and **Synthetic Course** (Ollama course generator with optional **publish to Moodle**, quiz-attempt eval, and purge). State is read from the bind-mounted `./data` directory (also mounted read-write into the API container so eval / registry / monitoring artefacts persist across rebuilds). **Rebuild the Streamlit image** after changing `streamlit_app/` (the Dockerfile `COPY`s sources into the image). Auth is **not** built in — gate `:8501` behind your reverse proxy or basic-auth before exposing.
 
 ### Enhancement review → implementation map (how to use each feature)
 
