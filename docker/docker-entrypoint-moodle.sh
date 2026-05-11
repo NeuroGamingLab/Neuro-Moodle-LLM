@@ -52,7 +52,9 @@ run_install() {
     --adminemail="${MOODLE_ADMIN_EMAIL}" \
     --chmod=2770
   chown www-data:www-data "${CONFIG}" || true
-  chown -R www-data:www-data "${MOODLE_ROOT}" || true
+  # Do not `chown -R` the entire Moodle tree: tens of thousands of files make first
+  # boot stall for many minutes on cloud disks (Apache never starts → :8080 resets).
+  # Writable state lives under dataroot (handled above); core files stay root-owned.
 }
 
 mkdir -p "${DATAROOT}"
