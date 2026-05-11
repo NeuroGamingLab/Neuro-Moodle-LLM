@@ -240,6 +240,41 @@ pre {
   margin: 1rem 0;
 }
 
+/* Architecting AI LMS walkthrough — above Moodle highlight callout */
+.video-section {
+  margin-bottom: 2.5rem;
+}
+
+.video-section h2 {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 0.5rem;
+}
+
+.video-label {
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin: 0 0 0.75rem;
+}
+
+.video-player {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #000;
+}
+
+.video-link {
+  color: var(--accent);
+  font-size: 0.9rem;
+}
+
 /* Listen / audio block — mirrors Neuro-Adaptive-Robotron-ML */
 .audio-section {
   margin-bottom: 2.5rem;
