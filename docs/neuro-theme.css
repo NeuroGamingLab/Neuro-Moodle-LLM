@@ -117,6 +117,21 @@ h1 {
   font-weight: 500;
 }
 
+.header-diagram {
+  margin: 1.5rem 0 0;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.header-diagram img {
+  display: block;
+  width: 100%;
+  height: auto;
+  vertical-align: middle;
+}
+
 section {
   margin-bottom: 2.5rem;
 }
