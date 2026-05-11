@@ -129,6 +129,9 @@ moodle-latest-*.tar
 moodle-latest-*.tar.gz
 moodle-*.zip
 
+# Large narrated walkthrough (embed is on YouTube; local copy optional).
+docs/Architecting_AI_LMS_The_Neuro-Moodle-LLM.mp4
+
 # Other large/binary blobs that should not enter git history.
 *.iso
 *.img
