@@ -55,13 +55,13 @@ sequenceDiagram
   alt publish_to_moodle = false
     SC->>Q: upsert points (lineage + provenance:synthetic, synth_*)
   else publish_to_moodle = true
-    SC->>API: skip the synthetic-keyed upsert; defer to re-ingest below
+    SC->>API: skip the synthetic-keyed upsert — defer to re-ingest below
     SC->>SC: build Moodle course shell + Page resources via local_neurollm_*
     SC->>O: distractors per question (one chat per Q, format=json)
     SC->>SC: create per-module Quiz with multichoice items via local_neurollm_create_quiz_with_questions
     SC->>SC: ingest_course(real_moodle_id) → Qdrant under the real id
   end
-  SC->>FS: write golden JSONL (course_id retagged to real Moodle id; must_cite to Page name)
+  SC->>FS: write golden JSONL (course_id retagged to real Moodle id — must_cite to Page name)
   SC-->>API: {course_id, synth_course_id, ingest, publish?, golden, n_golden_questions}
   API-->>U: 200 OK + JSON
 
